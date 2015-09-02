@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import Site
 from django.db import connection
 from django.shortcuts import get_object_or_404
 from tenant_schemas.utils import get_tenant_model, remove_www_and_dev, get_public_schema_name
@@ -33,6 +34,7 @@ class TenantMiddleware(object):
         # it has the id 15. if 14 is cached instead of 15, the permissions for the wrong
         # model will be fetched.
         ContentType.objects.clear_cache()
+        Site.objects.clear_cache()
 
         # do we have a public-specific token?
         if hasattr(settings, 'PUBLIC_SCHEMA_URLCONF') and request.tenant.schema_name == get_public_schema_name():
